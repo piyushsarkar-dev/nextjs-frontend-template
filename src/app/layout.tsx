@@ -1,7 +1,15 @@
 import Header from "@/components/Header/Header";
 import ThemeProvider from "@/components/Providers/ThemeProvider";
+import type { Metadata } from "next";
 import { ReactNode } from "react";
 import "./globals.css";
+
+export const metadata: Metadata = {
+	title: "Next.js Frontend Template",
+	icons: {
+		icon: "/logo.png",
+	},
+};
 
 type RootLayoutProps = {
 	children: ReactNode;
