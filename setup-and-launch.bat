@@ -14,13 +14,13 @@ echo.
 echo Checking for dependency updates...
 call npx npm-check-updates@latest -i
 
-:: 3. Update package.json "name" with the current folder name
+:: 3. Prompt user for Project Name
 echo.
-echo Updating package.json name...
-for %%I in (.) do set "FolderName=%%~nxI"
+set /p ProjectName="Enter Project Name: "
 
+echo Updating package.json name...
 :: Use Node.js to safely update the JSON file (avoids complex batch parsing)
-node -e "const fs = require('fs'); try { const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); pkg.name = process.argv[1]; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2)); console.log('Updated name to: ' + pkg.name); } catch (e) { console.error('Error updating package.json:', e); }" "%FolderName%"
+node -e "const fs = require('fs'); try { const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); pkg.name = process.argv[1]; fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2)); console.log('Updated name to: ' + pkg.name); } catch (e) { console.error('Error updating package.json:', e); }" "%ProjectName%"
 
 :: 4. Prompt user for Author and GitHub URL
 echo.
@@ -77,5 +77,9 @@ echo ==========================================
 echo Project initialization complete!
 echo Starting development server...
 echo ==========================================
+
+:: Open Chrome after a short delay to allow server to start
+start /min cmd /c "timeout /t 5 >nul & start chrome http://localhost:3000"
+
 call npm run dev
 pause

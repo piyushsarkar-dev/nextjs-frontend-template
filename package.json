@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-frontend-template",
+  "name": "starter-template",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -45,7 +45,7 @@
     "npm": "11.x",
     "bun": "1.3.3"
   },
-  "author": "Jpydip Sarkar",
+  "author": "Piyush Sarkar",
   "license": "MIT",
   "homepage": "https://github.com/piyushsarkar-dev/nextjs-frontend-template"
 }
