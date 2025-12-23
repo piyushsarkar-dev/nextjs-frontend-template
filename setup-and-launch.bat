@@ -75,5 +75,7 @@ if not "%RepoUrl%"=="" (
 echo.
 echo ==========================================
 echo Project initialization complete!
+echo Starting development server...
 echo ==========================================
+call npm run dev
 pause
