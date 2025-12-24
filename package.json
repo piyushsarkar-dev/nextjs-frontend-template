@@ -1,5 +1,5 @@
 {
-	"name": "nextjs-frontend-template",
+	"name": "next-js-temp",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
@@ -45,7 +45,8 @@
 		"npm": "11.x",
 		"bun": "1.3.3"
 	},
-	"author": "Piyush Sarkar",
+	"author": "Deep Ghosh",
 	"license": "MIT",
-	"homepage": "https://github.com/piyushsarkar-dev/nextjs-frontend-template"
+	"homepage": "https://github.com/piyushsarkar-dev/quiz-class-11/issues/1#issuecomment-3690175555"
 }
+
