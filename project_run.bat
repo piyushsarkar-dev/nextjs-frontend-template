@@ -100,7 +100,7 @@ set /p "PROJECT_HOMEPAGE= %YELLOW%Homepage URL: %RESET%"
 echo.
 echo  %BLUE%[INFO] Updating package.json...%RESET%
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$q=[char]34; $c = Get-Content 'package.json' -Raw; $c = $c -replace ($q+'name'+$q+':\s*'+$q+'.*?'+$q), ($q+'name'+$q+': '+$q+'%PROJECT_NAME%'+$q); $c = $c -replace ($q+'author'+$q+':\s*'+$q+'.*?'+$q), ($q+'author'+$q+': '+$q+'%PROJECT_AUTHOR%'+$q); $c = $c -replace ($q+'homepage'+$q+':\s*'+$q+'.*?'+$q), ($q+'homepage'+$q+': '+$q+'%PROJECT_HOMEPAGE%'+$q); $c | Set-Content 'package.json'"
+powershell -Command "$json = Get-Content 'package.json' -Raw | ConvertFrom-Json; $json.name = '%PROJECT_NAME%'; $json.author = '%PROJECT_AUTHOR%'; $json.homepage = '%PROJECT_HOMEPAGE%'; $json | ConvertTo-Json -Depth 10 | Set-Content 'package.json'"
 
 :: ============================================================================
 :: 5. PACKAGE MANAGER SELECTION
@@ -116,47 +116,46 @@ if /i "%PM_CHOICE%"=="npm" (
     echo.
     echo  %GREEN%[INFO] Installing dependencies using npm...%RESET%
     call npm install
-    set "RUN_CMD=npm run dev"
-    goto :SETUP_VSCODE
+    goto :START_DEV
 )
 
 if /i "%PM_CHOICE%"=="bun" (
     echo.
     echo  %GREEN%[INFO] Installing dependencies using bun...%RESET%
     call bun install
-    set "RUN_CMD=bun run dev"
-    goto :SETUP_VSCODE
+    goto :START_DEV
 )
 
 echo  %RED%[ERROR] Invalid selection. Please type 'npm' or 'bun'.%RESET%
 goto :SELECT_PM
 
 :: ============================================================================
-:: 6. SETUP VS CODE & EXIT
+:: 6. START DEVELOPMENT SERVER
 :: ============================================================================
-:SETUP_VSCODE
+:START_DEV
 echo.
-echo  %BLUE%[INFO] Configuring Visual Studio Code tasks...%RESET%
+echo  %CYAN%======================================================================%RESET%
+echo  %GREEN%   STARTING DEVELOPMENT SERVER%RESET%
+echo  %CYAN%======================================================================%RESET%
+echo.
+echo  %BLUE%[INFO] The server logs will appear below.%RESET%
+echo  %BLUE%[INFO] Closing Visual Studio Code will automatically close this terminal.%RESET%
+echo.
 
-if not exist .vscode mkdir .vscode
+if /i "%PM_CHOICE%"=="npm" (
+    start /b cmd /c npm run dev
+) else (
+    start /b bun run dev
+)
 
-:: Create run_server.bat to handle browser opening and server execution
-(
-echo @echo off
-echo echo [INFO] Opening default browser at http://localhost:3000...
-echo start http://localhost:3000
-echo echo [INFO] Starting development server...
-echo %%*
-echo echo.
-echo echo [INFO] Server stopped. Press any key to close this terminal...
-echo pause ^>nul
-) > .vscode\run_server.bat
+:: Wait for VS Code to close
+call code -w .
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo  %RED%[WARNING] Visual Studio Code command 'code' was not found or failed.%RESET%
+    echo  %YELLOW%The server is running. Press any key to stop it and exit.%RESET%
+    pause >nul
+)
 
-:: Create tasks.json using PowerShell to handle JSON content safely
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$tasks = @{ version = '2.0.0'; tasks = @( @{ label = 'Start Development Server'; type = 'shell'; command = '.vscode\run_server.bat %RUN_CMD%'; problemMatcher = @(); group = @{ kind = 'build'; isDefault = $true }; runOptions = @{ runOn = 'folderOpen' }; presentation = @{ reveal = 'always'; panel = 'dedicated' } } ) }; $tasks | ConvertTo-Json -Depth 10 | Set-Content '.vscode/tasks.json'"
-
-echo  %GREEN%[SUCCESS] Setup complete! Opening Visual Studio Code...%RESET%
-echo  %BLUE%[INFO] The development server will start automatically in the VS Code terminal.%RESET%
-
-call code .
+:: Exit the script and close the terminal
 exit
