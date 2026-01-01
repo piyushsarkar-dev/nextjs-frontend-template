@@ -100,7 +100,10 @@ set /p "PROJECT_HOMEPAGE= %YELLOW%Homepage URL: %RESET%"
 echo.
 echo  %BLUE%[INFO] Updating package.json...%RESET%
 
-powershell -Command "$json = Get-Content 'package.json' -Raw | ConvertFrom-Json; $json.name = '%PROJECT_NAME%'; $json.author = '%PROJECT_AUTHOR%'; $json.homepage = '%PROJECT_HOMEPAGE%'; $json | ConvertTo-Json -Depth 10 | Set-Content 'package.json'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$json = Get-Content 'package.json' -Raw | ConvertFrom-Json; $json.name = '%PROJECT_NAME%'; $json.author = '%PROJECT_AUTHOR%'; $json.homepage = '%PROJECT_HOMEPAGE%'; $json | ConvertTo-Json -Depth 10 | Set-Content 'package.json'"
+
+echo  %BLUE%[INFO] Formatting package.json with Prettier...%RESET%
+call npx prettier --write package.json
 
 :: ============================================================================
 :: 5. PACKAGE MANAGER SELECTION
@@ -147,6 +150,10 @@ if /i "%PM_CHOICE%"=="npm" (
 ) else (
     start /b bun run dev
 )
+
+:: Wait for server to initialize and open browser
+timeout /t 5 >nul
+start http://localhost:3000
 
 :: Wait for VS Code to close
 call code -w .
