@@ -20,12 +20,14 @@ const Header = () => {
 
 	useEffect(() => {
 		const handleScroll = () => {
-			setIsScrolled(window.scrollY > 0);
+			if (window.scrollY > 0 !== isScrolled) {
+				setIsScrolled(window.scrollY > 0);
+			}
 		};
 
-		window.addEventListener("scroll", handleScroll);
+		window.addEventListener("scroll", handleScroll, { passive: true });
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+	}, [isScrolled]);
 
 	return (
 		<header
@@ -57,13 +59,14 @@ const Header = () => {
 				<nav className="hidden items-center gap-6 md:flex">
 					<Link
 						href={"/"}
-						className="hover:text-primary text-sm font-medium">
+						className="hover:text-primary focus-visible:text-primary text-sm font-medium focus-visible:outline-none">
 						Home
 					</Link>
 					<Link
 						href={"https://github.com/piyushsarkar-dev"}
 						target="_blank"
-						rel="noopener noreferrer">
+						rel="noopener noreferrer"
+						className="focus-visible:text-primary focus-visible:outline-none">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="24"
@@ -94,7 +97,7 @@ const Header = () => {
 						<Link
 							href={"/"}
 							onClick={toggleMenu}
-							className="hover:text-primary text-lg font-medium">
+							className="hover:text-primary focus-visible:text-primary text-lg font-medium focus-visible:outline-none">
 							Home
 						</Link>
 						<Link
@@ -102,7 +105,7 @@ const Header = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							onClick={toggleMenu}
-							className="hover:text-primary flex items-center gap-3 text-lg font-medium">
+							className="hover:text-primary focus-visible:text-primary flex items-center gap-3 text-lg font-medium focus-visible:outline-none">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
