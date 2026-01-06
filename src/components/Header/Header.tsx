@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HamburgerMenu from "./HamburgerMenu";
 
 const ThemeToggleButton = dynamic(() => import("../ThemeToggleButton"), {
@@ -12,36 +12,54 @@ const ThemeToggleButton = dynamic(() => import("../ThemeToggleButton"), {
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 	};
 
+	useEffect(() => {
+		const handleScroll = () => {
+			setIsScrolled(window.scrollY > 0);
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
 	return (
 		<header
-			className="bg-background fixed top-0 right-0 left-0 z-50 border-b shadow"
+			className={`fixed top-0 right-0 left-0 z-50 backdrop-blur-md transition-all duration-300 ease-out ${
+				isScrolled
+					? "bg-background/80 border-border border-b shadow-sm"
+					: "border-b border-b-transparent bg-transparent shadow-none"
+			}`}
 			aria-label="app-header">
-			<div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+			<div className="mx-auto flex h-14 w-full max-w-[1280px] items-center justify-between px-4 md:h-16 md:px-6">
 				<Link
 					href={"/"}
-					className="flex items-center gap-2">
+					className="flex items-center gap-3">
 					<Image
 						src="/logo.png"
 						alt="Logo"
-						width={40}
-						height={40}
-						className="object-contain"
+						width={28}
+						height={28}
+						className="h-7 w-auto object-contain"
 					/>
 					<h1
-						className="text-xl font-semibold"
+						className="text-xl font-bold tracking-tight"
 						aria-label="App Name">
 						NEXT App
 					</h1>
 				</Link>
 
 				{/* Desktop Nav */}
-				<nav className="hidden items-center gap-4 md:flex">
-					<Link href={"/"}>Home</Link>
+				<nav className="hidden items-center gap-6 md:flex">
+					<Link
+						href={"/"}
+						className="hover:text-primary text-sm font-medium">
+						Home
+					</Link>
 					<Link
 						href={"https://github.com/piyushsarkar-dev"}
 						target="_blank"
@@ -71,12 +89,12 @@ const Header = () => {
 
 			{/* Mobile Menu Overlay */}
 			{isMenuOpen && (
-				<div className="bg-background absolute top-[65px] right-0 left-0 h-screen border-b px-6 py-4 shadow-md md:hidden">
-					<nav className="flex flex-col gap-4">
+				<div className="bg-background/95 absolute top-14 right-0 left-0 h-[calc(100vh-3.5rem)] border-b px-4 py-6 shadow-md backdrop-blur-md md:hidden">
+					<nav className="flex flex-col gap-6">
 						<Link
 							href={"/"}
 							onClick={toggleMenu}
-							className="text-lg font-medium">
+							className="hover:text-primary text-lg font-medium">
 							Home
 						</Link>
 						<Link
@@ -84,7 +102,7 @@ const Header = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							onClick={toggleMenu}
-							className="flex items-center gap-2 text-lg font-medium">
+							className="hover:text-primary flex items-center gap-3 text-lg font-medium">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
