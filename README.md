@@ -33,7 +33,9 @@ We've all been there—spending hours configuring ESLint, setting up dark mode, 
 
 ## ⚡ Quick Start
 
-Getting started is super easy. You can use either `npm` or `Bun`.
+Getting started is super easy — you start the dev server manually from your terminal.
+
+You can use either `npm` or `Bun`.
 
 ### 1. Clone the repo
 
@@ -74,13 +76,54 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser, and you're live! 🚀
 
+### Other useful commands
+
+```bash
+npm run lint
+npm run build
+npm run start
+npm run prod
+```
+
 ## 🔧 Customization
 
-Make it yours! Here are a few things you might want to update in `package.json`:
+Make it yours! Below is a step-by-step guide to customizing `package.json`.
 
-- **name**: Change `nextjs-frontend-template` to your project name.
-- **author**: Update `Piyush Sarkar` to your name.
-- **homepage**: Point this to your own repository.
+### Step-by-step: Customize `package.json`
+
+1. Update project identity
+   - `name`: set to your app/package name (example: `my-app`).
+   - `version`: set an initial version (example: `0.1.0`).
+   - `private`: keep `true` for apps (prevents accidental publishing).
+   - `author`, `license`, `homepage`: set these to your own values.
+
+2. Choose your package manager (recommended: pick one)
+   - This repo currently supports `npm` and `bun` (there is both a `package-lock.json` and `bun.lock`).
+   - If you only want one, remove the lockfile you won’t use so installs stay consistent.
+   - Keep `engines` in sync with what you’ll actually run in CI and locally.
+
+3. Understand and customize scripts
+   - `dev`: starts Next.js in development mode.
+   - `build`: creates a production build.
+   - `start`: runs the production server (requires `build` first).
+   - `lint`: runs ESLint.
+   - `prod`: runs `eslint && next build && next start`.
+
+   Common additions you can add safely:
+   - `typecheck`: `tsc --noEmit`
+   - `format`: `prettier --write .`
+   - `format:check`: `prettier --check .`
+
+4. Add or remove dependencies (the right way)
+   - Runtime packages go in `dependencies`.
+   - Tooling packages go in `devDependencies`.
+   - Examples:
+     - `npm install <pkg>` / `npm install -D <pkg>`
+     - `bun add <pkg>` / `bun add -d <pkg>`
+
+5. Add environment variables
+   - Create `.env.local` (not committed by default) for local secrets.
+   - In Next.js, variables prefixed with `NEXT_PUBLIC_` are exposed to the browser.
 
 ## 📂 Project Structure
 
@@ -106,6 +149,7 @@ Here's how we've organized things to keep it clean and scalable:
 - `build`: Compile for production.
 - `start`: Run the production build locally.
 - `lint`: Check your code for style issues.
+- `prod`: Lint, build, and start (one command).
 
 ## 👤 Author
 
